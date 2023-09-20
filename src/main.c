@@ -1,21 +1,19 @@
-#include <stdio.h>
 #include <stdbool.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "buffer.h"
+#include "command.h"
+#include "statement.h"
 
-void printPrompt()
-{
-    printf("db > ");
-}
+void printPrompt() { printf("db > "); }
 
-void readInput(InputBuffer *inputBuffer)
-{
-    ssize_t bytesRead = getline(&(inputBuffer->buffer), &(inputBuffer->bufferLength), stdin);
+void readInput(InputBuffer *inputBuffer) {
+    ssize_t bytesRead =
+        getline(&(inputBuffer->buffer), &(inputBuffer->bufferLength), stdin);
 
-    if (bytesRead <= 0)
-    {
+    if (bytesRead <= 0) {
         printf("Error reading input\n");
         exit(EXIT_FAILURE);
     }
@@ -24,22 +22,33 @@ void readInput(InputBuffer *inputBuffer)
     inputBuffer->buffer[bytesRead - 1] = 0;
 }
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
     InputBuffer *inputBuffer = newInputBuffer();
-    while (true)
-    {
+    while (true) {
         printPrompt();
         readInput(inputBuffer);
 
-        if (strcmp(inputBuffer->buffer, ".exit") == 0)
-        {
-            closeInputBuffer(inputBuffer);
-            exit(EXIT_SUCCESS);
+        if (inputBuffer->buffer[0] == '.') {
+            switch (doMetaCommand(inputBuffer)) {
+            case META_COMMAND_SUCCESS:
+                continue;
+            case META_COMMAND_UNRECOGNIZED_COMMAND:
+                printf("Unrecognized command '%s'\n", inputBuffer->buffer);
+                continue;
+            }
         }
-        else
-        {
-            printf("Unrecognized command '%s'.\n", inputBuffer->buffer);
+
+        Statement statement;
+        switch (prepareStatement(inputBuffer, &statement)) {
+        case PREPARE_SUCCESS:
+            break;
+        case PREPARE_UNRECOGNIZED_STATEMENT:
+            printf("Unrecognized keyword at start of '%s'n.\n",
+                   inputBuffer->buffer);
+            continue;
         }
+
+        executeStatement(&statement);
+        printf("Executed.\n");
     }
 }
