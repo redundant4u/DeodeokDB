@@ -1,0 +1,5 @@
+{
+  "C_Cpp.clang_format_style": "{ IndentWidth: 4 }",
+  "C_Cpp.clang_format_fallbackStyle": "Google",
+  "C_Cpp.errorSquiggles": "disabled"
+}
