@@ -6,6 +6,7 @@
 #include "buffer.h"
 #include "command.h"
 #include "statement.h"
+#include "table.h"
 
 void printPrompt() { printf("db > "); }
 
@@ -23,7 +24,9 @@ void readInput(InputBuffer *inputBuffer) {
 }
 
 int main(int argc, char *argv[]) {
+    Table *table = newTable();
     InputBuffer *inputBuffer = newInputBuffer();
+
     while (true) {
         printPrompt();
         readInput(inputBuffer);
@@ -42,13 +45,22 @@ int main(int argc, char *argv[]) {
         switch (prepareStatement(inputBuffer, &statement)) {
         case PREPARE_SUCCESS:
             break;
+        case PREPARE_SYNTAX_ERROR:
+            printf("Syntax error. Could not parse statement.\n");
+            continue;
         case PREPARE_UNRECOGNIZED_STATEMENT:
             printf("Unrecognized keyword at start of '%s'n.\n",
                    inputBuffer->buffer);
             continue;
         }
 
-        executeStatement(&statement);
-        printf("Executed.\n");
+        switch (executeStatement(&statement, table)) {
+        case EXECUTE_SUCCESS:
+            printf("Executed.\n");
+            break;
+        case EXECUTE_TABLE_FULL:
+            printf("Error: Table full.\n");
+            break;
+        }
     }
 }

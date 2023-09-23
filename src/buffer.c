@@ -2,8 +2,7 @@
 
 #include "buffer.h"
 
-InputBuffer *newInputBuffer()
-{
+InputBuffer *newInputBuffer() {
     InputBuffer *inputBuffer = (InputBuffer *)malloc(sizeof(InputBuffer));
 
     inputBuffer->buffer = NULL;
@@ -13,8 +12,7 @@ InputBuffer *newInputBuffer()
     return inputBuffer;
 }
 
-void closeInputBuffer(InputBuffer *inputBuffer)
-{
+void closeInputBuffer(InputBuffer *inputBuffer) {
     free(inputBuffer->buffer);
     free(inputBuffer);
 }
