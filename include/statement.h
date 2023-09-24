@@ -11,6 +11,7 @@ typedef struct {
     Row rowToInsert;
 } Statement;
 
+PrepareResult prepareInsert(InputBuffer *inputBuffer, Statement *statement);
 PrepareResult prepareStatement(InputBuffer *inputBuffer, Statement *statement);
 ExecuteResult executeInsert(Statement *statement, Table *table);
 ExecuteResult executeSelect(Statement *statement, Table *table);
