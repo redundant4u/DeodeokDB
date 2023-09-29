@@ -1,7 +1,8 @@
 #ifndef row_h
 #define row_h
 
-#include "common.h"
+#include <unistd.h>
+
 #include "table.h"
 
 #define COLUMN_USERNAME_SIZE 32

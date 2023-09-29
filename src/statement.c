@@ -2,13 +2,12 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "command.h"
 #include "statement.h"
 
 PrepareResult prepareInsert(InputBuffer *inputBuffer, Statement *statement) {
     statement->type = STATEMENT_INSERT;
 
-    char *keyword = strtok(inputBuffer->buffer, " ");
+    strtok(inputBuffer->buffer, " ");
     char *idString = strtok(NULL, " ");
     char *username = strtok(NULL, " ");
     char *email = strtok(NULL, " ");

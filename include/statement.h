@@ -1,6 +1,7 @@
 #ifndef statement_h
 #define statement_h
 
+#include "command.h"
 #include "row.h"
 #include "table.h"
 

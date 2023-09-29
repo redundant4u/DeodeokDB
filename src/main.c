@@ -24,7 +24,14 @@ void readInput(InputBuffer *inputBuffer) {
 }
 
 int main(int argc, char *argv[]) {
-    Table *table = newTable();
+    if (argc < 2) {
+        printf("Must supply a database filename.\n");
+        exit(EXIT_FAILURE);
+    }
+
+    char *filename = argv[1];
+    Table *table = dbOpen(filename);
+
     InputBuffer *inputBuffer = newInputBuffer();
 
     while (true) {
@@ -32,7 +39,7 @@ int main(int argc, char *argv[]) {
         readInput(inputBuffer);
 
         if (inputBuffer->buffer[0] == '.') {
-            switch (doMetaCommand(inputBuffer)) {
+            switch (doMetaCommand(inputBuffer, table)) {
             case META_COMMAND_SUCCESS:
                 continue;
             case META_COMMAND_UNRECOGNIZED_COMMAND:

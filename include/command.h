@@ -2,6 +2,7 @@
 #define command_h
 
 #include "buffer.h"
+#include "table.h"
 
 typedef enum {
     META_COMMAND_SUCCESS,
@@ -21,6 +22,6 @@ typedef enum {
     EXECUTE_TABLE_FULL,
 } ExecuteResult;
 
-MetaCommandResult doMetaCommand(InputBuffer *inputBuffer);
+MetaCommandResult doMetaCommand(InputBuffer *inputBuffer, Table *table);
 
 #endif
