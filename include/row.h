@@ -3,6 +3,7 @@
 
 #include <unistd.h>
 
+#include "cursor.h"
 #include "table.h"
 
 #define COLUMN_USERNAME_SIZE 32
@@ -32,7 +33,7 @@ static const uint32_t TABLE_MAX_ROWS = ROWS_PER_PAGE * TABLE_MAX_PAGES;
 
 void serializeRow(Row *source, void *destination);
 void deserializeRow(void *source, Row *destination);
-void *rowSlot(Table *table, uint32_t rowNum);
+void *cursorValue(Cursor *cursor);
 void printRow(Row *row);
 
 #endif

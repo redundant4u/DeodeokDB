@@ -17,10 +17,11 @@ void deserializeRow(void *source, Row *destination) {
     memcpy(&(destination->email), source + EMAIL_OFFSET, EMAIL_SIZE);
 }
 
-void *rowSlot(Table *table, uint32_t rowNum) {
+void *cursorValue(Cursor *cursor) {
+    uint32_t rowNum = cursor->rowNum;
     uint32_t pageNum = rowNum / ROWS_PER_PAGE;
 
-    void *page = getPage(table->pager, pageNum);
+    void *page = getPage(cursor->table->pager, pageNum);
 
     uint32_t rowOffset = rowNum % ROWS_PER_PAGE;
     uint32_t byteOffset = rowOffset * ROW_SIZE;

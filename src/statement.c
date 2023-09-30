@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "cursor.h"
 #include "statement.h"
 
 PrepareResult prepareInsert(InputBuffer *inputBuffer, Statement *statement) {
@@ -55,20 +56,27 @@ ExecuteResult executeInsert(Statement *statement, Table *table) {
     }
 
     Row *rowToInsert = &(statement->rowToInsert);
+    Cursor *cursor = tableEnd(table);
 
-    serializeRow(rowToInsert, rowSlot(table, table->numRows));
+    serializeRow(rowToInsert, cursorValue(cursor));
     table->numRows += 1;
+
+    free(cursor);
 
     return EXECUTE_SUCCESS;
 }
 
 ExecuteResult executeSelect(Statement *statement, Table *table) {
+    Cursor *cursor = tableStart(table);
     Row row;
 
-    for (uint32_t i = 0; i < table->numRows; i++) {
-        deserializeRow(rowSlot(table, i), &row);
+    while (!(cursor->endOfTable)) {
+        deserializeRow(cursorValue(cursor), &row);
         printRow(&row);
+        cursorAdvance(cursor);
     }
+
+    free(cursor);
 
     return EXECUTE_SUCCESS;
 }
