@@ -8,7 +8,7 @@
 #include "row.h"
 
 Pager *pagerOpen(const char *filename) {
-    int fd = open(filename, O_RDWR | O_CREAT | S_IWUSR | S_IRUSR);
+    int fd = open(filename, O_RDWR | O_CREAT, S_IWUSR | S_IRUSR);
 
     if (fd == -1) {
         printf("Unable to open file.\n");
