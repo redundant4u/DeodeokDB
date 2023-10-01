@@ -4,6 +4,7 @@
 
 #include "cursor.h"
 #include "statement.h"
+#include "tree.h"
 
 PrepareResult prepareInsert(InputBuffer *inputBuffer, Statement *statement) {
     statement->type = STATEMENT_INSERT;
@@ -51,15 +52,16 @@ PrepareResult prepareStatement(InputBuffer *inputBuffer, Statement *statement) {
 }
 
 ExecuteResult executeInsert(Statement *statement, Table *table) {
-    if (table->numRows >= TABLE_MAX_ROWS) {
+    void *node = getPage(table->pager, table->rootPageNum);
+
+    if ((*leafNodeNumCells(node) >= LEAF_NODE_MAX_CELLS)) {
         return EXECUTE_TABLE_FULL;
     }
 
     Row *rowToInsert = &(statement->rowToInsert);
     Cursor *cursor = tableEnd(table);
 
-    serializeRow(rowToInsert, cursorValue(cursor));
-    table->numRows += 1;
+    leafNodeInsert(cursor, rowToInsert->id, rowToInsert);
 
     free(cursor);
 

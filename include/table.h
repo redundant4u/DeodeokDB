@@ -8,7 +8,7 @@
 
 typedef struct {
     Pager *pager;
-    uint32_t numRows;
+    uint32_t rootPageNum;
 } Table;
 
 #define TABLE_MAX_PAGES 100

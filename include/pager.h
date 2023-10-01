@@ -6,6 +6,7 @@
 typedef struct {
     int fileDescriptor;
     uint32_t fileLength;
+    uint32_t numPages;
     void *pages[TABLE_MAX_PAGES];
 } Pager;
 
@@ -15,6 +16,6 @@ typedef struct {
 
 Pager *pagerOpen(const char *filename);
 void *getPage(Pager *pager, uint32_t pageNum);
-void pagerFlush(Pager *pager, uint32_t pageNum, uint32_t size);
+void pagerFlush(Pager *pager, uint32_t pageNum);
 
 #endif

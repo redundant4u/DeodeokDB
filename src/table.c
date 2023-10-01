@@ -3,41 +3,34 @@
 
 #include "row.h"
 #include "table.h"
+#include "tree.h"
 
 Table *dbOpen(const char *filename) {
     Pager *pager = pagerOpen(filename);
-    uint32_t numRows = pager->fileLength / ROW_SIZE;
 
     Table *table = (Table *)malloc(sizeof(Table));
     table->pager = pager;
-    table->numRows = numRows;
+    table->rootPageNum = 0;
+
+    if (pager->numPages == 0) {
+        void *rootNode = getPage(pager, 0);
+        initializeLeafNode(rootNode);
+    }
 
     return table;
 }
 
 void dbClose(Table *table) {
     Pager *pager = table->pager;
-    uint32_t numFullPages = table->numRows / ROWS_PER_PAGE;
 
-    for (uint32_t i = 0; i < numFullPages; i++) {
+    for (uint32_t i = 0; i < pager->numPages; i++) {
         if (pager->pages[i] == NULL) {
             continue;
         }
 
-        pagerFlush(pager, i, PAGE_SIZE);
+        pagerFlush(pager, i);
         free(pager->pages[i]);
         pager->pages[i] = NULL;
-    }
-
-    uint32_t numAdditionalRows = table->numRows % ROWS_PER_PAGE;
-    if (numAdditionalRows > 0) {
-        uint32_t pageNum = numFullPages;
-
-        if (pager->pages[pageNum] != NULL) {
-            pagerFlush(pager, pageNum, numAdditionalRows * ROW_SIZE);
-            free(pager->pages[pageNum]);
-            pager->pages[pageNum] = NULL;
-        }
     }
 
     int result = close(pager->fileDescriptor);
