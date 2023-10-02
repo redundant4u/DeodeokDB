@@ -51,3 +51,45 @@ void dbClose(Table *table) {
     free(pager);
     free(table);
 }
+
+Cursor *tableStart(Table *table) {
+    Cursor *cursor = malloc(sizeof(Cursor));
+
+    cursor->table = table;
+    cursor->pageNum = table->rootPageNum;
+    cursor->cellNum = 0;
+
+    void *rootNode = getPage(table->pager, table->rootPageNum);
+    uint32_t numCells = *leafNodeNumCells(rootNode);
+    cursor->endOfTable = (numCells == 0);
+
+    return cursor;
+}
+Cursor *tableFind(Table *table, uint32_t key) {
+    uint32_t rootPageNum = table->rootPageNum;
+    void *rootNode = getPage(table->pager, rootPageNum);
+
+    if (getNodeType(rootNode) == NODE_LEAF) {
+        return leafNodeFind(table, rootPageNum, key);
+    } else {
+        printf("Need to implement searching an internal node\n");
+        exit(EXIT_FAILURE);
+    }
+}
+
+void *cursorValue(Cursor *cursor) {
+    uint32_t pageNum = cursor->pageNum;
+    void *page = getPage(cursor->table->pager, pageNum);
+
+    return leafNodeValue(page, cursor->cellNum);
+}
+
+void cursorAdvance(Cursor *cursor) {
+    uint32_t pageNum = cursor->pageNum;
+    void *node = getPage(cursor->table->pager, pageNum);
+
+    cursor->cellNum += 1;
+    if (cursor->cellNum >= (*leafNodeNumCells(node))) {
+        cursor->endOfTable = true;
+    }
+}

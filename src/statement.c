@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "cursor.h"
 #include "statement.h"
+#include "table.h"
 #include "tree.h"
 
 PrepareResult prepareInsert(InputBuffer *inputBuffer, Statement *statement) {
@@ -54,12 +54,23 @@ PrepareResult prepareStatement(InputBuffer *inputBuffer, Statement *statement) {
 ExecuteResult executeInsert(Statement *statement, Table *table) {
     void *node = getPage(table->pager, table->rootPageNum);
 
-    if ((*leafNodeNumCells(node) >= LEAF_NODE_MAX_CELLS)) {
+    uint32_t numCells = (*leafNodeNumCells(node));
+
+    if (numCells >= LEAF_NODE_MAX_CELLS) {
         return EXECUTE_TABLE_FULL;
     }
 
     Row *rowToInsert = &(statement->rowToInsert);
-    Cursor *cursor = tableEnd(table);
+    uint32_t keyToInsert = rowToInsert->id;
+    Cursor *cursor = tableFind(table, keyToInsert);
+
+    if (cursor->cellNum < numCells) {
+        uint32_t keyAtIndex = *leafNodeKey(node, cursor->cellNum);
+
+        if (keyAtIndex == keyToInsert) {
+            return EXECUTE_DUPLICATE_KEY;
+        }
+    }
 
     leafNodeInsert(cursor, rowToInsert->id, rowToInsert);
 

@@ -1,7 +1,10 @@
+#ifndef tree_h
+#define tree_h
+
 #include <unistd.h>
 
-#include "cursor.h"
 #include "row.h"
+#include "table.h"
 
 typedef enum {
     NODE_INTERNAL,
@@ -38,8 +41,14 @@ uint32_t *leafNodeNumCells(void *node);
 void *leafNodeCell(void *node, uint32_t cellNum);
 uint32_t *leafNodeKey(void *node, uint32_t cellNum);
 void *leafNodeValue(void *node, uint32_t cellNum);
+Cursor *leafNodeFind(Table *table, uint32_t pageNum, uint32_t key);
 void leafNodeInsert(Cursor *cursor, uint32_t key, Row *value);
 void initializeLeafNode(void *node);
 
+NodeType getNodeType(void *node);
+void setNodeType(void *node, NodeType type);
+
 void printConstants();
 void printLeafNode(void *node);
+
+#endif

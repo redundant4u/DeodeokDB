@@ -19,6 +19,37 @@ void *leafNodeValue(void *node, uint32_t cellNum) {
     return leafNodeCell(node, cellNum) + LEAF_NODE_KEY_SIZE;
 }
 
+Cursor *leafNodeFind(Table *table, uint32_t pageNum, uint32_t key) {
+    void *node = getPage(table->pager, pageNum);
+    uint32_t numCells = *leafNodeNumCells(node);
+
+    Cursor *cursor = malloc(sizeof(Cursor));
+    cursor->table = table;
+    cursor->pageNum = pageNum;
+
+    uint32_t minIndex = 0;
+    uint32_t onePastMaxIndex = numCells;
+
+    while (onePastMaxIndex != minIndex) {
+        uint32_t index = (minIndex + onePastMaxIndex) / 2;
+        uint32_t keyAtIndex = *leafNodeKey(node, index);
+
+        if (key == keyAtIndex) {
+            cursor->cellNum = index;
+            return cursor;
+        }
+
+        if (key < keyAtIndex) {
+            onePastMaxIndex = index;
+        } else {
+            minIndex = index + 1;
+        }
+    }
+
+    cursor->cellNum = minIndex;
+    return cursor;
+}
+
 void leafNodeInsert(Cursor *cursor, uint32_t key, Row *value) {
     void *node = getPage(cursor->table->pager, cursor->pageNum);
 
@@ -43,7 +74,20 @@ void leafNodeInsert(Cursor *cursor, uint32_t key, Row *value) {
     serializeRow(value, leafNodeValue(node, cursor->cellNum));
 }
 
-void initializeLeafNode(void *node) { *leafNodeNumCells(node) = 0; }
+void initializeLeafNode(void *node) {
+    setNodeType(node, NODE_LEAF);
+    *leafNodeNumCells(node) = 0;
+}
+
+NodeType getNodeType(void *node) {
+    uint8_t value = *((uint8_t *)(node + NODE_TYPE_OFFSET));
+    return (NodeType)value;
+}
+
+void setNodeType(void *node, NodeType type) {
+    uint8_t value = type;
+    *((uint8_t *)(node + NODE_TYPE_OFFSET)) = value;
+}
 
 void printConstants() {
     printf("ROW_SIZE: %d\n", ROW_SIZE);
