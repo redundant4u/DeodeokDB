@@ -15,6 +15,7 @@ Table *dbOpen(const char *filename) {
     if (pager->numPages == 0) {
         void *rootNode = getPage(pager, 0);
         initializeLeafNode(rootNode);
+        setNodeRoot(rootNode, true);
     }
 
     return table;

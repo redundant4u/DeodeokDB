@@ -56,10 +56,6 @@ ExecuteResult executeInsert(Statement *statement, Table *table) {
 
     uint32_t numCells = (*leafNodeNumCells(node));
 
-    if (numCells >= LEAF_NODE_MAX_CELLS) {
-        return EXECUTE_TABLE_FULL;
-    }
-
     Row *rowToInsert = &(statement->rowToInsert);
     uint32_t keyToInsert = rowToInsert->id;
     Cursor *cursor = tableFind(table, keyToInsert);
