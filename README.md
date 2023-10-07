@@ -12,6 +12,9 @@ make
 
 ## Update
 
+- 231007: [Updating Parent Node After a Split](https://cstack.github.io/db_tutorial/parts/part13.html)
+- 231004: [Scanning a Multi-Level B-Tree](https://cstack.github.io/db_tutorial/parts/part12.html)
+- 231004: [Recursively Searching the B-Tree](https://cstack.github.io/db_tutorial/parts/part11.html)
 - 231003: [Splitting a Leaf Node](https://cstack.github.io/db_tutorial/parts/part10.html)
 - 231002: [Binary Search and Duplicate Keys](https://cstack.github.io/db_tutorial/parts/part9.html)
 - 231001: [B-Tree Leaf Node Format](https://cstack.github.io/db_tutorial/parts/part8.html)
