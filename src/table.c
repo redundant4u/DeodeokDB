@@ -54,18 +54,15 @@ void dbClose(Table *table) {
 }
 
 Cursor *tableStart(Table *table) {
-    Cursor *cursor = malloc(sizeof(Cursor));
+    Cursor *cursor = tableFind(table, 0);
 
-    cursor->table = table;
-    cursor->pageNum = table->rootPageNum;
-    cursor->cellNum = 0;
-
-    void *rootNode = getPage(table->pager, table->rootPageNum);
-    uint32_t numCells = *leafNodeNumCells(rootNode);
+    void *node = getPage(table->pager, cursor->pageNum);
+    uint32_t numCells = *leafNodeNumCells(node);
     cursor->endOfTable = (numCells == 0);
 
     return cursor;
 }
+
 Cursor *tableFind(Table *table, uint32_t key) {
     uint32_t rootPageNum = table->rootPageNum;
     void *rootNode = getPage(table->pager, rootPageNum);
@@ -73,8 +70,7 @@ Cursor *tableFind(Table *table, uint32_t key) {
     if (getNodeType(rootNode) == NODE_LEAF) {
         return leafNodeFind(table, rootPageNum, key);
     } else {
-        printf("Need to implement searching an internal node\n");
-        exit(EXIT_FAILURE);
+        return internalNodeFind(table, rootPageNum, key);
     }
 }
 
@@ -91,6 +87,14 @@ void cursorAdvance(Cursor *cursor) {
 
     cursor->cellNum += 1;
     if (cursor->cellNum >= (*leafNodeNumCells(node))) {
-        cursor->endOfTable = true;
+        // Advance to next leaf node
+        uint32_t nextPageNum = *leafNodeNextLeaf(node);
+
+        if (nextPageNum == 0) {
+            cursor->endOfTable = true;
+        } else {
+            cursor->pageNum = nextPageNum;
+            cursor->cellNum = 0;
+        }
     }
 }

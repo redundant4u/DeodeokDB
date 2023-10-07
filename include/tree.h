@@ -24,8 +24,12 @@ static const uint8_t COMMON_NODE_HEADER_SIZE =
 // Leaf Node Header Layout
 static const uint32_t LEAF_NODE_NUM_CELLS_SIZE = sizeof(uint32_t);
 static const uint32_t LEAF_NODE_NUM_CELLS_OFFSET = COMMON_NODE_HEADER_SIZE;
-static const uint32_t LEAF_NODE_HEADER_SIZE =
-    COMMON_NODE_HEADER_SIZE + LEAF_NODE_NUM_CELLS_SIZE;
+static const uint32_t LEAF_NODE_NEXT_LEAF_SIZE = sizeof(uint32_t);
+static const uint32_t LEAF_NODE_NEXT_LEAF_OFFSET =
+    LEAF_NODE_NUM_CELLS_OFFSET + LEAF_NODE_NUM_CELLS_SIZE;
+static const uint32_t LEAF_NODE_HEADER_SIZE = COMMON_NODE_HEADER_SIZE +
+                                              LEAF_NODE_NUM_CELLS_SIZE +
+                                              LEAF_NODE_NEXT_LEAF_SIZE;
 
 // Leaf Node Body Layout
 static const uint32_t LEAF_NODE_KEY_SIZE = sizeof(uint32_t);
@@ -60,12 +64,17 @@ static const uint32_t INTERNAL_NODE_KEY_SIZE = sizeof(uint32_t);
 static const uint32_t INTERNAL_NODE_CHILD_SIZE = sizeof(uint32_t);
 static const uint32_t INTERNAL_NODE_CELL_SIZE =
     INTERNAL_NODE_CHILD_SIZE + INTERNAL_NODE_KEY_SIZE;
+static const uint32_t INTERNAL_NODE_MAX_CELLS = 3;
 
 uint32_t *internalNodeNumKeys(void *node);
 uint32_t *internalNodeRightChild(void *node);
 uint32_t *internalNodeCell(void *node, uint32_t cellNum);
 uint32_t *internalNodeChild(void *node, uint32_t childNum);
 uint32_t *internalNodeKey(void *node, uint32_t keyNum);
+uint32_t internalNodeFindChild(void *node, uint32_t key);
+Cursor *internalNodeFind(Table *table, uint32_t pageNum, uint32_t key);
+void internalNodeInsert(Table *table, uint32_t parentPageNum,
+                        uint32_t childPageNum);
 
 NodeType getNodeType(void *node);
 void setNodeType(void *node, NodeType type);
@@ -73,10 +82,15 @@ void setNodeType(void *node, NodeType type);
 bool isNodeRoot(void *node);
 void setNodeRoot(void *node, bool isRoot);
 
+uint32_t *nodeParent(void *node);
+
+void updateInternalNodeKey(void *node, uint32_t oldKey, uint32_t newKey);
+
 uint32_t *leafNodeNumCells(void *node);
 void *leafNodeCell(void *node, uint32_t cellNum);
 uint32_t *leafNodeKey(void *node, uint32_t cellNum);
 void *leafNodeValue(void *node, uint32_t cellNum);
+uint32_t *leafNodeNextLeaf(void *node);
 Cursor *leafNodeFind(Table *table, uint32_t pageNum, uint32_t key);
 void leafNodeSplitAndInsert(Cursor *cursor, uint32_t key, Row *value);
 void leafNodeInsert(Cursor *cursor, uint32_t key, Row *value);
