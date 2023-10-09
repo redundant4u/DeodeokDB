@@ -19,7 +19,64 @@ bundle install
 make test
 ```
 
-### Debugging (Visual Studio Code)
+## Commands
+
+### Select
+
+```bash
+select
+(1, user1, person1@example.com)
+(2, user2, person2@example.com)
+(3, user3, person3@example.com)
+```
+
+### Insert
+
+```bash
+# id name email
+insert 1 user user@user.com
+```
+
+### Btree
+
+```bash
+.btree
+Tree:
+- internal (size 1)
+  - leaf (size 7)
+    - 1
+    - 2
+    - 3
+    - 4
+    - 5
+    - 6
+    - 7
+  - key 7
+  - leaf (size 8)
+    - 8
+    - 9
+    - 10
+    - 11
+    - 12
+    - 13
+    - 14
+    - 15
+```
+
+### Constants
+
+```bash
+.constants
+Constants:
+ROW_SIZE: 293
+COMMON_NODE_HEADER_SIZE: 6
+LEAF_NODE_HEADER_SIZE: 14
+LEAF_NODE_CELL_SIZE: 297
+LEAF_NODE_SPACE_FOR_CELLS: 4082
+LEAF_NODE_MAX_CELLS: 13
+```
+
+## Debugging (Visual Studio Code)
 
 1. Install [CodeLLDB](https://marketplace.visualstudio.com/items?itemName=vadimcn.vscode-lldb) extension
 2. Check `tasks.json` and `launch.json`
