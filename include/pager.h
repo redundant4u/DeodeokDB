@@ -1,7 +1,7 @@
 #ifndef pager_h
 #define pager_h
 
-#define TABLE_MAX_PAGES 100
+#define TABLE_MAX_PAGES 400
 
 typedef struct {
     int fileDescriptor;

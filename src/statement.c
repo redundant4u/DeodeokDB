@@ -75,7 +75,7 @@ ExecuteResult executeInsert(Statement *statement, Table *table) {
     return EXECUTE_SUCCESS;
 }
 
-ExecuteResult executeSelect(Statement *statement, Table *table) {
+ExecuteResult executeSelect(Table *table) {
     Cursor *cursor = tableStart(table);
     Row row;
 
@@ -95,6 +95,6 @@ ExecuteResult executeStatement(Statement *statement, Table *table) {
     case STATEMENT_INSERT:
         return executeInsert(statement, table);
     case STATEMENT_SELECT:
-        return executeSelect(statement, table);
+        return executeSelect(table);
     }
 }

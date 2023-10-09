@@ -15,7 +15,7 @@ typedef struct {
 PrepareResult prepareInsert(InputBuffer *inputBuffer, Statement *statement);
 PrepareResult prepareStatement(InputBuffer *inputBuffer, Statement *statement);
 ExecuteResult executeInsert(Statement *statement, Table *table);
-ExecuteResult executeSelect(Statement *statement, Table *table);
+ExecuteResult executeSelect(Table *table);
 ExecuteResult executeStatement(Statement *statement, Table *table);
 
 #endif
