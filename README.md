@@ -5,13 +5,30 @@
 
 ## Usage
 
+### Build & Run
+
 ```bash
 make
 ./main test.db
 ```
 
+### Test
+
+```bash
+bundle install
+make test
+```
+
+### Debugging (Visual Studio Code)
+
+1. Install [CodeLLDB](https://marketplace.visualstudio.com/items?itemName=vadimcn.vscode-lldb) extension
+2. Check `tasks.json` and `launch.json`
+3. Set breakpoints
+4. Run(F5)
+
 ## Update
 
+- 231009: [Splitting Internal Nodes](https://cstack.github.io/db_tutorial/parts/part14.html)
 - 231007: [Updating Parent Node After a Split](https://cstack.github.io/db_tutorial/parts/part13.html)
 - 231004: [Scanning a Multi-Level B-Tree](https://cstack.github.io/db_tutorial/parts/part12.html)
 - 231004: [Recursively Searching the B-Tree](https://cstack.github.io/db_tutorial/parts/part11.html)
