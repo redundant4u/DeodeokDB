@@ -7,5 +7,8 @@ OUTPUT=main
 build:
 	$(CC) $(CFLAGS) -o $(OUTPUT) $(SRC)
 
+test: build
+	bundle exec rspec test/test.rb
+
 clean:
 	rm $(OUTPUT)
