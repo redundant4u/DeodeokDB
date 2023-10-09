@@ -6,6 +6,8 @@
 #include "row.h"
 #include "table.h"
 
+#define INVALID_PAGE_NUM UINT32_MAX
+
 typedef enum {
     NODE_INTERNAL,
     NODE_LEAF,
@@ -73,6 +75,8 @@ uint32_t *internalNodeChild(void *node, uint32_t childNum);
 uint32_t *internalNodeKey(void *node, uint32_t keyNum);
 uint32_t internalNodeFindChild(void *node, uint32_t key);
 Cursor *internalNodeFind(Table *table, uint32_t pageNum, uint32_t key);
+void internalNodeSplitAndInsert(Table *table, uint32_t parentPageNum,
+                                uint32_t childPageNum);
 void internalNodeInsert(Table *table, uint32_t parentPageNum,
                         uint32_t childPageNum);
 
@@ -99,7 +103,7 @@ void initializeLeafNode(void *node);
 void initializeInternalNode(void *node);
 
 uint32_t getUnusedPageNum(Pager *pager);
-uint32_t getNodeMaxKey(void *node);
+uint32_t getNodeMaxKey(Pager *pager, void *node);
 
 void createNewRoot(Table *table, uint32_t rightChildPageNum);
 
